@@ -2,8 +2,8 @@ Package: simplexreg
 Type: Package
 Title: Regression Analysis of Proportional Data Using Simplex
         Distribution
-Version: 1.0
-Date: 2013-09-26
+Version: 1.1
+Date: 2015-06-20
 Author: Peng Zhang, Zhengguo Qiu and Chengchun Shi
 Maintainer: Peng Zhang <pengz@zju.edu.cn>
 Description: Simplex density, distribution, quantile functions as well as random variable
@@ -14,7 +14,8 @@ Description: Simplex density, distribution, quantile functions as well as random
 	computation. 
 Depends: Formula, plotrix
 License: GPL-2
-Packaged: 2014-01-31 08:54:06 UTC; Administrator
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-01-31 12:10:16
+SystemRequirements: GNU Scientific Library version >= 1.8
+Packaged: 2015-06-21 16:39:04 UTC; spring
+Date/Publication: 2015-06-22 01:56:29

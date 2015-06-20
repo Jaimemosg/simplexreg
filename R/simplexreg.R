@@ -57,6 +57,12 @@ function(formula, data, subset, na.action, type = c("homo", "hetero"),
    	   	stop("observations must be in (0, 1)")
    	result <- simplexreg.fit(y = Y, x = X, z = Z, t = T, type = type, link = link, corr = corr, 
    	   	id = id, control = control)
+	if (is.null(result)){
+		warning("Independent correlation structure is used in the marginal model")
+		corr <- "Ind"
+		result <- simplexreg.fit(y = Y, x = X, z = Z, t = T, type = type, link = link, corr = corr, 
+			id = id, control = control)
+	}
    	result$terms <- list(mean = mtX, dispersion = mtZ)
    	result$levels <- list(mean = .getXlevels(mtX, mf), dispersion = .getXlevels(mtZ, mf))
    	result$contrasts <- list(mean = attr(X, "contrasts"), dispersion = attr(Z, "contrasts"))

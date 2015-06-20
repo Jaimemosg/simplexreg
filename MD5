@@ -1,5 +1,5 @@
-8e10909f3e48f3a7f757bd4eb0f90e52 *DESCRIPTION
-8ac934719f1a32d6a27b369e94ea47fb *NAMESPACE
+75e736134301624726d0580a42655798 *DESCRIPTION
+298381e9d39267d2ee60da7c2f02c193 *NAMESPACE
 98ced996036f41d7ebcbf92f66294941 *R/INV.R
 fad0c01c8b4eeffdd2e294ef1a5cb9a6 *R/Vfun.R
 7ff9460650ce8bb989a80df897edadd9 *R/dd.R
@@ -26,8 +26,8 @@ dc2c754067092155eab9b15556f2a4ac *R/rMIG.R
 c5913a1a711b2e3ed350010bf34d575a *R/rsim.R
 9f6a5cdc3d0c69d82a98a1ec89139d14 *R/simglm1.R
 56e98a7947be1a26efb92af18a0c10e8 *R/simglm2.R
-ff09460d7d5113cb8bc2c52ff33e5b78 *R/simplexgee.R
-b11c2337f42decd4b2e08075a902d9a1 *R/simplexreg.R
+a7c67a55850679842f8a1abee0c4014b *R/simplexgee.R
+0afb1b003276c5da365b50325e91311f *R/simplexreg.R
 2908a3ce5d179df50075790139b2cd47 *R/simplexreg.fit.R
 3c41ada714c04aff66d6d5cdac2fe3e0 *R/uu.R
 d93395d0fe7041bf670970099c23bb9f *R/var.sim.R
@@ -43,5 +43,5 @@ eca344af595e453631734e4bb61904bc *man/simplex.Rd
 9122df2cbbe72a0d63b1166a19d0530f *man/simplexreg.Rd
 094323b0fc451c0129a2e13b92199d0e *man/simplexreg.control.Rd
 77063ced12f79358f82a5c06ca498b02 *man/summary.simplexreg.Rd
-386e40e96f4cf7baf8ffcc8df08f81c3 *src/Makevars
-ca61842741b88fbfbaf3365f5ac4b8d8 *src/sim.gee.cpp
+316897bc91515010da0f34200f5005c1 *src/Makevars
+4e46374d78ff3dd4ba8f5a12209953d2 *src/sim.gee.cpp

@@ -96,9 +96,7 @@ simgee2 <- function(y, X, Z, T, id, link = 1, type = 0, beta, Sigma, alpha, maxi
 ## initial values of alpha
 	rr <- uu(y, mu) / sqrt(sigma * halfEd2(mu, sigma))
 	if (is.null(alpha)){
-		alpha <- preCor(T, rr, ID)
-		if (alpha >= 0)
-			alpha <- -0.5
+		alpha <- -0.5
 	}
 ## Newton-Scoring algorithm for theta:
 	theta <- c(beta, Sigma, alpha)
@@ -114,6 +112,9 @@ simgee2 <- function(y, X, Z, T, id, link = 1, type = 0, beta, Sigma, alpha, maxi
    	   	beta <- result[[1]]
    	   	Sigma <- result[[2]]
    	   	alpha <- result[[3]]
+		if (alpha== -1000){
+			return(NULL)
+		}
    	   	mu <- result[[4]]
    	   	sigma <- result[[5]]
    	   	theta <- c(beta, Sigma, alpha)
@@ -287,9 +288,9 @@ simgee1 <- function(y, X, T, id, link = 1, type = 0, beta, alpha, maxiter, tol) 
 ## initial values of alpha:
 	rr <- uu(y, mu) / sqrt(sigma * halfEd2(mu, sigma))
 	if (is.null(alpha)){
-		alpha <- preCor(T, rr, ID)
-		if (alpha >= 0)
-			alpha <- -0.5
+#		alpha <- preCor(T, rr, ID)
+#		if (alpha >= 0||is.na(alpha))
+		alpha <- -0.5
 	}
 ## Newton-Scoring algorithm for theta:
 	theta <- c(beta, alpha)
@@ -304,6 +305,9 @@ simgee1 <- function(y, X, T, id, link = 1, type = 0, beta, alpha, maxiter, tol) 
 			as.integer(N), as.integer(m), as.integer(p), as.integer(link), as.integer(type))
    	   	beta <- result[[1]]
    	   	alpha <- result[[2]]
+		if (alpha== -1000){
+			return(NULL)
+		}
    	   	mu <- result[[3]]
    	   	sigma <- result[[4]]
    	   	theta <- c(beta, alpha)
@@ -430,7 +434,7 @@ preCor <- function(T, rr, ID){
 		if (i == 1)
 			a <- 1
 		else
-			a <- ID[i-1]
+			a <- ID[i-1]+1
 		b <- ID[i]
 		corre <- outer(rr[a:b], rr[a:b])
 		for (k in a:(b-1)){

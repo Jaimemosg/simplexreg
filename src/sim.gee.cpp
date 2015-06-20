@@ -246,30 +246,32 @@ void CalSenMat1(double *S3, double *Phi, double *y, double *mu, double *sigma, d
 void CalSenMat2(double *S3, double *Phi, double *y, double *mu, double *sigma, double *r, double alpha, int a, int b)
 {
 	int n = b - a + 1;
-	gsl_vector *gsl_R = gsl_vector_alloc(n*(n-1)/2);
-	double *gsl_R_ptr = gsl_vector_ptr(gsl_R, 0);
-	gsl_vector *gsl_dR = gsl_vector_alloc(n*(n-1)/2);
-	double *gsl_dR_ptr = gsl_vector_ptr(gsl_dR, 0);
-	gsl_vector *gsl_Eta = gsl_vector_alloc(n*(n-1)/2);
-	double *gsl_Eta_ptr = gsl_vector_ptr(gsl_Eta, 0);
-	int s = 0;
+//	gsl_vector *gsl_R = gsl_vector_alloc(n*(n-1)/2);
+//	double *gsl_R_ptr = gsl_vector_ptr(gsl_R, 0);
+//	gsl_vector *gsl_dR = gsl_vector_alloc(n*(n-1)/2);
+//	double *gsl_dR_ptr = gsl_vector_ptr(gsl_dR, 0);
+//	gsl_vector *gsl_Eta = gsl_vector_alloc(n*(n-1)/2);
+//	double *gsl_Eta_ptr = gsl_vector_ptr(gsl_Eta, 0);
+//	int s = 0;
 	for (int i = 0;i < n-1;i++){
 		for (int j = i+1; j < n;j++){
-			gsl_R_ptr[s+j-i-1] = r[a+i-1] * r[a+j-1]; //* sqrt(var_uu(mu[a+i-1], sigma[a+i-1])) * sqrt(var_uu(mu[a+j-1], sigma[a+j-1]));
-			gsl_Eta_ptr[s+j-i-1] = exp(alpha); //* sqrt(var_uu(mu[a+i-1], sigma[a+i-1])) * sqrt(var_uu(mu[a+j-1], sigma[a+j-1]));
-			gsl_dR_ptr[s+j-i-1] = exp(alpha);
+			*S3 += r[a+i-1] * r[a+j-1]; 
+			*Phi += 1.0;
+//* sqrt(var_uu(mu[a+i-1], sigma[a+i-1])) * sqrt(var_uu(mu[a+j-1], sigma[a+j-1]));
+//			gsl_Eta_ptr[s+j-i-1] = exp(alpha); //* sqrt(var_uu(mu[a+i-1], sigma[a+i-1])) * sqrt(var_uu(mu[a+j-1], sigma[a+j-1]));
+//			gsl_dR_ptr[s+j-i-1] = exp(alpha);
 		}
-		s += n-i-1;
+//		s += n-i-1;
 	}
-	*S3 -= pow(gsl_blas_dnrm2(gsl_dR), 2);
-	double result[1];
-	gsl_vector_sub(gsl_R, gsl_Eta);
-	gsl_blas_ddot(gsl_R, gsl_dR, result);
-	*Phi += *result;
+//	*S3 -= pow(gsl_blas_dnrm2(gsl_dR), 2);
+//	double result[1];
+//	gsl_vector_sub(gsl_R, gsl_Eta);
+//	gsl_blas_ddot(gsl_R, gsl_dR, result);
+//	*Phi += *result;
 
-	gsl_vector_free(gsl_R);
-	gsl_vector_free(gsl_dR);
-	gsl_vector_free(gsl_Eta);
+//	gsl_vector_free(gsl_R);
+//	gsl_vector_free(gsl_dR);
+//	gsl_vector_free(gsl_Eta);
 }
 
 // one time update of the parameter
@@ -318,23 +320,6 @@ void Update(double *beta, double *Sigma, double *alpha, double *mu, double *sigm
 			temp_ptr[i] = dd(y[i], mu[i]);
 		gsl_vector_sub(temp, &gsl_sigma.vector);
 		gsl_vector *temp2 = gsl_vector_alloc(*q);
-		/*if (*wkcov == 1){
-			gsl_matrix *tempM1 = gsl_matrix_alloc(*N, *q);
-			gsl_matrix_memcpy(tempM1, &gsl_Z.matrix);
-			gsl_vector_view gsl_tempM1_col = gsl_matrix_column(tempM1, 0);
-			for (int i = 0;i < *q;i++){
-				gsl_tempM1_col = gsl_matrix_column(tempM1, i);
-				gsl_vector_mul(&gsl_tempM1_col.vector, &gsl_sigma.vector);
-			}
-			gsl_blas_dsyrk(CblasUpper, CblasTrans, 1.0, tempM1, 0.0, Chole);
-			gsl_blas_dgemv(CblasTrans, 1.0, tempM1, temp, 0.0, temp2);
-			gsl_matrix_free(tempM1);
-			double *Chole_ptr = gsl_matrix_ptr(Chole, 0, 0);
-			for (int i = 0;i < *q;i++)
-				for (int j = (i+1);j < *q;j++)
-					Chole_ptr[j*(*q)+i] = Chole_ptr[i*(*q)+j];
-		}
-		else{*/
 		gsl_blas_dsyrk(CblasUpper, CblasTrans, 1.0, &gsl_Z.matrix, 0.0, Chole);
 		double *Chole_ptr = gsl_matrix_ptr(Chole, 0, 0);
 		for (int i = 0;i < *q;i++)
@@ -364,8 +349,10 @@ void Update(double *beta, double *Sigma, double *alpha, double *mu, double *sigm
 				CalSenMat2(S3, Phi, y, mu, sigma, gsl_uu_ptr, *alpha, a, b);
 		}
 		*alpha = *alpha - *Phi / *S3;
+		if (*alpha < -1000)
+			*alpha = -1000;
 		if (*alpha >= 0)
-			::Rf_error( "AR(1) may not fit the data well. Try a better start value for alpha or remove the outlier of the data set" );
+			*alpha = -1000;
 
 		// update mu
 		gsl_vector_view gsl_mu = gsl_vector_view_array(mu, *N);
@@ -422,7 +409,7 @@ void Update_homo(double *beta, double *alpha, double *mu, double *sigma, double 
 		status = gsl_linalg_cholesky_decomp(SenMat);
 		gsl_set_error_handler_off();
 		if (status)
-			::Rf_error( "Sensitivity matrix is not positive-definete" );
+			::Rf_error( "Sensitivity matrix is not positive-definite" );
 		gsl_linalg_cholesky_svx(SenMat, Psi);
 		gsl_vector_add(&gsl_beta.vector, Psi);
 
@@ -441,10 +428,24 @@ void Update_homo(double *beta, double *alpha, double *mu, double *sigma, double 
 			else
 				CalSenMat2(S3, Phi, y, mu, sigma, gsl_uu_ptr, *alpha, a, b);
 		}
-		*alpha = *alpha - *Phi / *S3;
-		if (*alpha >= 0)
-			::Rf_error( "AR(1) may not fit the data well. Try a better start value for alpha or remove the outlier of the data set" );
-
+		if (*type == 0){
+			*alpha = *alpha - *Phi / *S3;
+			if (*alpha < -1000)
+				*alpha = -1000;
+			if (*alpha >= 0)
+				*alpha = -1000;
+		}
+		else{
+			if (*S3 / *Phi > 0)
+				*alpha = log(*S3 / *Phi);
+			else
+				*alpha = -1000;
+			if (*alpha < -1000)
+				*alpha = -1000;
+			if (*alpha > 0)
+				*alpha = -1000;
+		}
+		
 		// update mu
 		gsl_vector_view gsl_mu = gsl_vector_view_array(mu, *N);
 		gsl_blas_dgemv(CblasNoTrans, 1.0, &gsl_X.matrix, &gsl_beta.vector, 0.0, &gsl_mu.vector);
