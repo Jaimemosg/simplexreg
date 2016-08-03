@@ -2,7 +2,11 @@
 \alias{summary.simplexreg}
 \alias{print.summary.simplexreg}
 \alias{coef.simplexreg}
+\alias{vcov.simplexreg}
+\alias{logLik.simplexreg}
+\alias{nobs.simplexreg}
 \alias{AIC.simplexreg}
+\alias{BIC.simplexreg}
 \title{Extracting Information from Objects simplexreg}
 \description{Methods for extracting information from fitted simplex regression model
 objects of class \code{"simplexreg"}}
@@ -14,13 +18,12 @@ objects of class \code{"simplexreg"}}
 \method{coef}{simplexreg}(object, ...)
 
 ## S3 method for class 'simplexreg'
-\method{AIC}{simplexreg}(object, ..., k = 2)
+\method{vcov}{simplexreg}(object, ...)
 }
 \arguments{
 	\item{object}{fitted model object of class "simplexreg"}
 	\item{type}{character specifying type of residuals to be included, see 
 	\code{\link{residuals.simplexreg}}}
-	\item{k}{numeric penalty per parameter to be used, default value is 2}
 	\item{...}{currently not used}
 }
 \details{These functions make it possible to extract information from objects of class
@@ -30,10 +33,10 @@ coefficients, a \eqn{\chi^2} test is performed and the p-value is reported in th
 Otherwise, coefficients of the autocorrelation \eqn{\alpha}, \eqn{\rho}, (see Song 
 \emph{et. al} (2004)), are also involved. 
 
-Model coefficients as well as their standard deviations could be extracted by the \code{\link{coef}}.
-For simplex GEE models (\code{GEE = TRUE}), \code{\link{coef}} can also extract information about
-\eqn{\alpha} and \eqn{\rho}. For simplex GLM models (\code{GEE = FALSE}), Akaike's 'An Information 
-Criterion' could be calculated by the generic function \code{\link{AIC}}. 
+Model coefficients and their covariance matrix could be extracted by the \code{\link{coef}},
+and \code{\link{vcov}}, respectively. For simplex GLM models (\code{GEE = FALSE}), Akaike Information 
+Criterion and Bayesian Information Criterion could be calculated using generic functions \code{\link{AIC}}
+and \code{\link{BIC}}, respectively. 
 }
 
 \references{Barndorff-Nielsen,  O.E. and  Jorgensen, B. (1991)
@@ -46,6 +49,10 @@ Criterion' could be calculated by the generic function \code{\link{AIC}}.
     Song, P. and Qiu, Z. and Tan, M. (2004) Modelling Heterogeneous Dispersion in 
    Marginal Models for Longitudinal Proportional Data. \emph{ Biometrical Journal,} 
    \bold{ 46:} 540--553
+   
+   Zhang, P. and Qiu, Z. and Shi, C. (2016) {simplexreg}: An {R} Package for Regression
+	Analysis of Proportional Data Using the Simplex Distribution. \emph{ Journal of Statistical Software,}
+	\bold{ 71:} 1--21
 %% ~put references to the literature/web site here ~
 }
 \author{Chengchun Shi
@@ -55,18 +62,21 @@ Criterion' could be calculated by the generic function \code{\link{AIC}}.
 \examples{
 ## fit the model
 data("sdac", package = "simplexreg")
-sim.glm2 <- simplexreg(rcd~ageadj+chemo|age, type = "hetero", link = "logit", 
+sim.glm2 <- simplexreg(rcd~ageadj+chemo|age, link = "logit", 
   data = sdac)
 
 data("retinal", package = "simplexreg")
-sim.gee2 <- simplexreg(Gas~LogT+LogT2+Level|LogT+Level|Time, type = "hetero", 
+sim.gee2 <- simplexreg(Gas~LogT+LogT2+Level|LogT+Level|Time,
   link = "logit", corr = "AR1", id = ID, data = retinal)  
   
 ## extract information
 summary(sim.glm2, type = "appstdPerr")
 coef(sim.glm2)
+vcov(sim.glm2)
 AIC(sim.glm2)
+BIC(sim.glm2)
 
 summary(sim.gee2, type = "stdscor")
 coef(sim.gee2)
+vcov(sim.glm2)
 }

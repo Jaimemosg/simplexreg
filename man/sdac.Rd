@@ -33,4 +33,8 @@ Stem Cell Transplantation. \emph{BONE MARROW TRANSPL,} \bold{ 20:} 967-72
 Yang, H. and Acker, J. and Cabuhat, M. and Letcher, B. and Larratt, L. and McGann, L. (2005) Association of 
 Post_Thaw viable CD34+ Cells and CFU-GM with Time to Hematopoietic Engraftment. \emph{BONE MARROW TRANSPL,} 
 \bold{ 35:} 881-887
+
+Zhang, P. and Qiu, Z. and Shi, C. (2016) {simplexreg}: An {R} Package for Regression
+	Analysis of Proportional Data Using the Simplex Distribution. \emph{ Journal of Statistical Software,}
+	\bold{ 71:} 1--21
 }

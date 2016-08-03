@@ -11,11 +11,11 @@ Simplex Models
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-simplexreg(formula, data, subset, na.action, type = c("homo", "hetero"), 
+simplexreg(formula, data, subset, na.action, 
    	link = c("logit", "probit", "cloglog", "neglog"), corr = "Ind", id = NULL, 
    	control = simplexreg.control(...), model = TRUE, y = TRUE, x = TRUE, ...)
 	
-simplexreg.fit(y, x, z = NULL, t = NULL, type = "homo", link = "logit", corr = "Ind",
+simplexreg.fit(y, x, z = NULL, t = NULL, link = "logit", corr = "Ind",
    	id = NULL, control = simplexreg.control())
 }
 %- maybe also 'usage' for other objects documented here.
@@ -29,9 +29,9 @@ simplexreg.fit(y, x, z = NULL, t = NULL, type = "homo", link = "logit", corr = "
 %%     ~~Describe \code{X} here~~
 }
   \item{subset, na.action}{arguments controlling formula processing via \code{\link{model.frame}}}
-  \item{type}{type of specification of dispersion, see 'Details'
+%%  \item{type}{type of specification of dispersion, see 'Details'
 %%     ~~Describe \code{type} here~~
-}
+%%}
   \item{link}{type of link function to the mean. Currently, \code{"logit"}(logit function), 
   \code{"probit"}(probit function), \code{"cloglog"}(complementary log-log function), 
   \code{"neglog"}(negative log function) are supported. 
@@ -65,14 +65,12 @@ Exchangeability and AR(1) structures are available. Parameter estimation and res
 are involved. 
 
 We employ the specification approach designed in the fitting model function \code{betareg} of
-beta regression in the package \pkg{betareg}. The \code{type} argument indicates whether the dispersion
-is homogeneous or heterogeneous among observations. As for simplex regression models, if \code{type = "homo"}, 
-the response is linked to a linear predictor described by \code{y ~ x1 + x2} using a \code{link} 
-function. Four types of function are available linking the regressors to the mean. However, when 
-modeling dispersion, the \code{link} function is restricted to logarithm function. If \code{type = 
-"hetero"}, the regressor modelling the dispersion parameter should be specified in a formula form of 
-type \code{y ~ x1 + x2 | z1 + z2} where \code{z1} and \code{z2} are linked to the dispersion 
-parameter \eqn{\sigma^2}.
+beta regression in the package \pkg{betareg}. As for simplex regression models, assuming the dispersion
+is homogeneous, the response is linked to a linear predictor described by \code{y ~ x1 + x2} using a \code{link} 
+function. Four types of function are available linking the regressors to the mean. However, for dispersion, 
+the \code{link} function is restricted to logarithm function. When modeling dispersion, the regressor 
+modelling the dispersion parameter should be specified in a formula form of type \code{y ~ x1 + x2 | z1 + z2} 
+where \code{z1} and \code{z2} are linked to the dispersion parameter \eqn{\sigma^2}.
 
 Model specification is a bit complicated when it comes to modelling longitudinal proportional response. 
 Song \emph{et. al} (2004) proposed a marginal simplex model consists of three components, the 
@@ -85,8 +83,8 @@ where \eqn{\alpha < 0} and \eqn{\exp(\alpha)}{exp(\alpha)} is the lag-1 autocorr
 \code{corr = "Exc"}, the covariance matrix will be \eqn{(1 - exp(\alpha)) I + exp(\alpha) 1}
 where I is the identity matrix while 1 the matrix with all elements being equal to one.  
 
-If \code{type = "homo"}, the formula is supposed to be of the form \code{y ~ x1 + x2 | 1 | t} where \eqn{t} is the
-time covariate mentioned above. Otherwise, the formula will be of the form \code{y ~ x1 + x2 | z1 + z2 | t}.
+For homogeneous dispersion, the formula is supposed to be of the form \code{y ~ x1 + x2 | 1 | t} where \eqn{t} is the
+time covariate. Otherwise, the formula will be of the form \code{y ~ x1 + x2 | z1 + z2 | t}.
         	
 %%  ~~ If necessary, more details than the description above ~~
 }
@@ -113,7 +111,8 @@ time covariate mentioned above. Otherwise, the formula will be of the form \code
   \item{terms}{a list with elements \code{"mean"} and \code{"dispersion"} containing term object for the model}
   \item{levels}{a list with elements \code{"mean"} and \code{"dispersion"} containing levels of categorical regressors}
   \item{link}{type of function linking to the mean}
-  \item{type}{type of model}
+  \item{type}{type = \code{"homo"} for homogeneous dispersion while type = \code{"hetero"} for 
+  heterogeneous dispersion}
   \item{model}{the full model frame (if \code{model = TRUE})}
   \item{y}{response vector (if \code{y = TRUE})}
   \item{x}{a list with elements \code{mean}, \code{dispersion}, \code{time} and \code{id} containing 
@@ -135,6 +134,10 @@ time covariate mentioned above. Otherwise, the formula will be of the form \code
    Song, P. and Qiu, Z. and Tan, M. (2004) Modelling Heterogeneous Dispersion in 
    Marginal Models for Longitudinal Proportional Data. \emph{ Biometrical Journal,} 
    \bold{ 46:} 540--553
+   
+   Zhang, P. and Qiu, Z. and Shi, C. (2016) {simplexreg}: An {R} Package for Regression
+	Analysis of Proportional Data Using the Simplex Distribution. \emph{ Journal of Statistical Software,}
+	\bold{ 71:} 1--21
 %% ~put references to the literature/web site here ~
 }
 \author{Zhenguo Qiu, Peng Zhang and Chengchun Shi
@@ -149,16 +152,16 @@ time covariate mentioned above. Otherwise, the formula will be of the form \code
 \examples{
 # GLM models
 data("sdac", package = "simplexreg")
-sim.glm1 <- simplexreg(rcd~ageadj+chemo, type = "homo", link = "logit", 
+sim.glm1 <- simplexreg(rcd~ageadj+chemo, link = "logit", 
   data = sdac)
-sim.glm2 <- simplexreg(rcd~ageadj+chemo|age, type = "hetero", link = "logit", 
+sim.glm2 <- simplexreg(rcd~ageadj+chemo|age, link = "logit", 
   data = sdac)
 
 # GEE models
 data("retinal", package = "simplexreg")
-sim.gee1 <- simplexreg(Gas~LogT+LogT2+Level|1|Time, type = "homo", link = "logit", 
+sim.gee1 <- simplexreg(Gas~LogT+LogT2+Level|1|Time, link = "logit", 
   corr = "Exc", id = ID, data = retinal)
-sim.gee2 <- simplexreg(Gas~LogT+LogT2+Level|LogT+Level|Time, type = "hetero", 
+sim.gee2 <- simplexreg(Gas~LogT+LogT2+Level|LogT+Level|Time, 
   link = "logit", corr = "AR1", id = ID, data = retinal)	
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

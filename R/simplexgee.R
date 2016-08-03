@@ -224,13 +224,18 @@ simgee2 <- function(y, X, Z, T, id, link = 1, type = 0, beta, Sigma, alpha, maxi
 	sss <- as.vector(gf(mu) + uu(y, mu)/sqrt(ss))
 	devi <- dd(y,mu)/sigma
 	pred <- as.vector(X %*% beta)
+    invGinf1 <- matrix(0, p+q+2, p+q+2)
+    invGinf1[1:(p+q+1), 1:(p+q+1)] <- invGinf
+    invGinf1[p+q+2, p+q+2] <- stdcorpar^2
+    invGinf1[1:(p+q+1), p+q+2] <- invGinf[1:(p+q+1), p+q+1] * exp(alpha)
+    invGinf1[p+q+2, 1:(p+q+1)] <- invGinf[p+q+1, 1:(p+q+1)] * exp(alpha)
 	options(warn = 0)
 	if (iter == maxiter)
 		warning("step size truncated due to divergence")
 	return(list(fixef = cbind(beta, stdfixef), dispar = cbind(Sigma, stddispar), 
 		Dispersion = sigma, autocor = c(alpha, stdalpha, exp(alpha), stdcorpar),
 		appstdPerr = ee, stdPerr = eee, meanmu = mu, adjvar = sss, stdscor = stdscor, 
-   	   	deviance = devi, predict = pred, iter = iter))
+		covf = invGinf1, deviance = devi, predict = pred, iter = iter))
 }
 
 #### GEE for homogeneous dispersion simplex marginal model (Song and Tan, 2000)
@@ -394,11 +399,16 @@ simgee1 <- function(y, X, T, id, link = 1, type = 0, beta, alpha, maxiter, tol) 
 	sss <- as.vector(gf(mu) + uu(y, mu)/sqrt(ss))
 	devi <- dd(y, mu) / sigma[1]
 	pred <- as.vector(X %*% beta)
+    invGinf1 <- matrix(0, p+2, p+2)
+    invGinf1[1:(p+1), 1:(p+1)] <- invGinf
+    invGinf1[p+2, p+2] <- stdcorpar^2
+    invGinf1[1:(p+1), p+2] <- invGinf[1:(p+1), p+1] * exp(alpha)
+    invGinf1[p+2, 1:(p+1)] <- invGinf[p+1, 1:(p+1)] * exp(alpha)	
 	if (iter == maxiter)
 		warning("step size truncated due to divergence")
 	return(list(fixef = cbind(beta, stdfixef), Dispersion = sigma[1], autocor = c(alpha, 
 		stdalpha, exp(alpha), stdcorpar), appstdPerr = ee, stdPerr = eee, stdscor = stdscor, 
-   	   	meanmu = mu, adjvar = sss, deviance = devi, predict = pred, iter = iter))
+   	   	covf = invGinf1, meanmu = mu, adjvar = sss, deviance = devi, predict = pred, iter = iter))
 }
 
 cormm <- function(id, T, stdscor) {

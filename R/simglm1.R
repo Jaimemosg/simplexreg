@@ -71,7 +71,7 @@ function(y, X, link=1, beta, maxit, tol) {
     pred <- as.vector(X %*% beta)
 	rr <- as.vector(uu(y, mu) / sqrt(Sigma * halfEd2(mu, rep(Sigma, N))))
     loglike <- -sum(dd(y,mu)/Sigma - log(Sigma))/2
-   	return(list(fixef = fixefb, Dispersion = Sigma, appstdPerr = ee, stdPerr = eee, 
+   	return(list(fixef = fixefb, Dispersion = Sigma, appstdPerr = ee, stdPerr = eee, covf = sdbeta,
    	   	stdscor = rr, meanmu = mu, adjvar = sss, predict = pred, loglike = loglike, 
    	deviance = devi, iter = iter))
 }

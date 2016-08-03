@@ -30,4 +30,8 @@ concentration levels of the gas injected in patients' eyes affect the decay rate
 \references{
 Meyers, S. M. and Ambler, J. S. and Tan, M. (1992) Variation of Perfluorpropane 
    Disappearance after Vitrectomy. \emph{ Retinal,} \bold{ 12:} 359--363
+   
+Zhang, P. and Qiu, Z. and Shi, C. (2016) {simplexreg}: An {R} Package for Regression
+	Analysis of Proportional Data Using the Simplex Distribution. \emph{ Journal of Statistical Software,}
+	\bold{ 71:} 1--21   
 }

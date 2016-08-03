@@ -1,22 +1,22 @@
-qsim <-
+qsimplex <-
 function (p, mu, sig){
 	epi = 10^{-6}
 	ll <- length(p)
 	qq <- rep(0,ll)
 	for (i in 1:ll){
-		if (sig > 200){qq[i] <- qsim(p[i], mu, 200)}
+		if (sig > 200){qq[i] <- qsimplex(p[i], mu, 200)}
 		else{
 		if (sig < 0.1){
-			qq[i] <- qsim.norm(p[i], mu, sig)
+			qq[i] <- qsimplex.norm(p[i], mu, sig)
 			}
 		#else if (sig > 100)
 		else {	
 		if ((sig<1 & mu*sig<0.1) | (sig>=1 & mu*sig <0.01)) {
 			#norquan <- qsim.norm(p[i], mu, sig)
-			grid <- c(seq(qsim.norm(p[i]/100, mu, sig), qsim.norm(min(p[i]+0.1, 1-epi), mu, sig), length.out=20), seq(0, mu, length.out=10)[2:10], seq(mu, 1, length.out=10)[2:9])
+			grid <- c(seq(qsimplex.norm(p[i]/100, mu, sig), qsimplex.norm(min(p[i]+0.1, 1-epi), mu, sig), length.out=20), seq(0, mu, length.out=10)[2:10], seq(mu, 1, length.out=10)[2:9])
 			} else if ((sig<1 & (1-mu)*sig<0.1) | (sig>=1 & (1-mu)*sig <0.01)) {
 				#norquan <- qsim.norm(p[i], mu, sig)
-				grid <- c(seq(qsim.norm(p[i]/100, mu, sig), qsim.norm(min(p[i]+0.1, 1-epi), mu, sig), length.out=20), seq(0, mu, length.out=10)[2:10], seq(mu, 1, length.out=10)[2:9])
+				grid <- c(seq(qsimplex.norm(p[i]/100, mu, sig), qsimplex.norm(min(p[i]+0.1, 1-epi), mu, sig), length.out=20), seq(0, mu, length.out=10)[2:10], seq(mu, 1, length.out=10)[2:9])
 				}
 				else {
 		step <- 0.1
@@ -24,7 +24,7 @@ function (p, mu, sig){
 		else if (p[i] >= (1-step/5)) {grid <-  c(seq(0, mu, length.out=10)[2:10], seq(mu, 1, length.out=10)[2:9], seq((1-epi), (1-10^(-8)),length.out=100))}
 		else {grid <-  c(seq(0, mu, length.out=10)[2:10], seq(mu, 1, length.out=10)[2:9])}
 		}
-		ppgrid <- psim(grid, mu, sig)
+		ppgrid <- psimplex(grid, mu, sig)
 		diffgrid <-sort(abs(ppgrid-p[i]), index.return=T)
 		index <- diffgrid$ix
 		sgrid <- grid[index]
@@ -56,7 +56,7 @@ function (p, mu, sig){
 						}
 			step <- (upper-lower)/10
 			grid <- seq(lower, upper, length.out=11)
-			ppgrid <- psim(grid, mu, sig)
+			ppgrid <- psimplex(grid, mu, sig)
 			diffgrid <- sort(abs(ppgrid-p[i]), index.return=T)
 			index <- diffgrid$ix
 			minidiff <- diffgrid$x[1]

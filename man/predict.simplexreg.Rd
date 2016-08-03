@@ -22,11 +22,11 @@ Chengchun Shi
 \examples{
 ## fit the model
 data("sdac", package="simplexreg")
-sim.glm2 <- simplexreg(rcd~ageadj+chemo|age, type = "hetero", link = "logit", 
+sim.glm2 <- simplexreg(rcd~ageadj+chemo|age, link = "logit", 
   data = sdac)
 
 data("retinal", package = "simplexreg")
-sim.gee2 <- simplexreg(Gas~LogT+LogT2+Level|LogT+Level|Time, type = "hetero", 
+sim.gee2 <- simplexreg(Gas~LogT+LogT2+Level|LogT+Level|Time,
   link = "logit", corr = "AR1", id = ID, data = retinal)  	
 
 ## predict the mean

@@ -53,6 +53,10 @@ where \eqn{u(y_i;\mu_i)} and \eqn{V(\mu_i)} are the score function and variance 
     Song, P. and Qiu, Z. and Tan, M. (2004) Modelling Heterogeneous Dispersion in 
    Marginal Models for Longitudinal Proportional Data. \emph{ Biometrical Journal,} 
    \bold{ 46:} 540--553
+   
+   Zhang, P. and Qiu, Z. and Shi, C. (2016) {simplexreg}: An {R} Package for Regression
+	Analysis of Proportional Data Using the Simplex Distribution. \emph{ Journal of Statistical Software,}
+	\bold{ 71:} 1--21
 %% ~put references to the literature/web site here ~
 }
 
@@ -64,11 +68,11 @@ where \eqn{u(y_i;\mu_i)} and \eqn{V(\mu_i)} are the score function and variance 
 \examples{
 ## fit the model
 data("sdac", package="simplexreg")
-sim.glm2 <- simplexreg(rcd~ageadj+chemo|age, type = "hetero", 
+sim.glm2 <- simplexreg(rcd~ageadj+chemo|age,
   link = "logit", data = sdac)
 	
 data("retinal", package = "simplexreg")
-sim.gee2 <- simplexreg(Gas~LogT+LogT2+Level|LogT+Level|Time, type = "hetero", 
+sim.gee2 <- simplexreg(Gas~LogT+LogT2+Level|LogT+Level|Time,
   link = "logit", corr = "AR1", id = ID, data = retinal)  
 
 ## extract the residuals

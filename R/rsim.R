@@ -1,4 +1,4 @@
-rsim <-
+rsimplex <-
 function(n, mu, sig) {
 ## generating random number from simplex dist'n 
 ## by transformation from inverse-gaussian mixture dist'n

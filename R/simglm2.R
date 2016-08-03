@@ -116,10 +116,13 @@ function(y, X, Z, link=1, beta, alpha, maxit, tol) {
    	   	rr <- as.vector(uu(y, mu)/sqrt(Sigma * halfEd2(mu, Sigma)))
         pred <- as.vector(X %*% beta)
         loglike <- -sum(dd(y,mu)/Sigma - log(Sigma))/2
+        invGinf <- matrix(0, p+q, p+q)
+        invGinf[1:p, 1:p] <- invS1
+        invGinf[(p+1):(p+q), (p+1):(p+q)] <- invSF 		
    	   	if (iter == maxit)
    	   	   	warning("step size truncated due to divergence")
 #	Waldsigma <- t(sigma[2:q]) %*% INV(invGinf[(p + 2):(p + q), (p + 2):(p + q)]) %*% sigma[2:q]
    	return(list(fixef = fixefb, dispar = fixefa, Dispersion = Sigma, appstdPerr = ee, 
 		stdPerr = eee, meanmu = mu, stdscor = rr, adjvar = sss, predict = pred, 
-   	   	loglike = loglike, deviance = devi, iter = iter))
+		covf = invGinf, loglike = loglike, deviance = devi, iter = iter))
 }

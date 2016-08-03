@@ -1,13 +1,13 @@
 simplexreg <-
-function(formula, data, subset, na.action, type = c("homo", "hetero"), 
+function(formula, data, subset, na.action, 
 	link = c("logit", "probit", "cloglog", "neglog"), corr = "Ind", id = NULL, 
 	control = simplexreg.control(...), model = TRUE, y = TRUE, x = TRUE, ...)
 {   
    	call <- match.call()
    	if (missing(data))
    	   	data <- environment(formula)
-   	if (missing(type))
-   	   	type <- "homo"
+#   	if (missing(type))
+#   	   	type <- "homo"
    	if (missing(link))
    	   	link <- "logit"	
    	mf <- match.call(expand.dots = FALSE)
@@ -37,6 +37,10 @@ function(formula, data, subset, na.action, type = c("homo", "hetero"),
    	Y <- model.response(mf, "numeric")
    	X <- model.matrix(mtX, mf)
    	Z <- model.matrix(mtZ, mf)
+    if (ncol(Z)>1)
+        type <- "hetero"
+    else
+        type <- "homo"
    	T <- model.matrix(mtT, mf)
    	T <- as.vector(T[,-1])
    	options(warn = 0)
@@ -55,12 +59,12 @@ function(formula, data, subset, na.action, type = c("homo", "hetero"),
    	   	stop("empty model")
    	if (min(Y) <= 0 || max(Y) >= 1)
    	   	stop("observations must be in (0, 1)")
-   	result <- simplexreg.fit(y = Y, x = X, z = Z, t = T, type = type, link = link, corr = corr, 
+   	result <- simplexreg.fit(y = Y, x = X, z = Z, t = T, link = link, corr = corr, 
    	   	id = id, control = control)
 	if (is.null(result)){
 		warning("Independent correlation structure is used in the marginal model")
 		corr <- "Ind"
-		result <- simplexreg.fit(y = Y, x = X, z = Z, t = T, type = type, link = link, corr = corr, 
+		result <- simplexreg.fit(y = Y, x = X, z = Z, t = T, link = link, corr = corr, 
 			id = id, control = control)
 	}
    	result$terms <- list(mean = mtX, dispersion = mtZ)
@@ -74,7 +78,7 @@ function(formula, data, subset, na.action, type = c("homo", "hetero"),
    	result$call <- call
    	result$formula <- oformula
    	result$link <- link
-   	result$type <- type
+    result$type <- type
    	result$n <- length(Y)
    	result$corr <- corr
    	if (model)
@@ -253,15 +257,20 @@ function(x, digits = max(3, getOption("digits") - 3), ...)
    	invisible(x)
 }
 
-AIC.simplexreg <- 
-function(object, ..., k = 2){
+logLik.simplexreg <- 
+function(object, ...){
 	if (object$corr != "Ind")
-		stop("Calculating AIC from GEE models is not supported")
+		stop("Calculating likelihood from GEE models is not supported")
 	if (object$type != "hetero")
 		df <- nrow(object$fixef) + 1
 	else 
 		df <- nrow(object$fixef) + nrow(object$dispar)
-	return(2 * object$loglike - 2 * df)
+	structure(object$loglike, class="logLik", df=df)
+}
+
+nobs.simplexreg <- 
+function(object, ...){ 
+    object$n
 }
 
 coef.simplexreg <-
@@ -269,27 +278,43 @@ function(object, ...){
    	type <- object$type
    	if (type == "homo"){
    	   	cf <- as.vector(object$fixef[,1])
-   	   	se <- as.vector(object$fixef[,2])
+#   	   	se <- as.vector(object$fixef[,2])
    	}
    	else{
    	   	cf <- as.vector(c(object$fixef[,1], object$dispar[,1]))
-   	   	se <- as.vector(c(object$fixef[,2], object$dispar[,2]))
+#   	   	se <- as.vector(c(object$fixef[,2], object$dispar[,2]))
    	}
    	corr <- object$corr
    	if (corr != "Ind"){
    	   	cf <- as.vector(c(cf, object$auto[c(1,3)]))
-   	   	se <- as.vector(c(se, object$auto[c(2,4)]))
+#   	   	se <- as.vector(c(se, object$auto[c(2,4)]))
    	}
-   	cf <- cbind(cf, se)
-   	colnames(cf) <- c("Estimate", "Std. Error")
+#   	cf <- cbind(cf, se)
+#   	colnames(cf) <- c("Estimate")
    	if (type == "homo")
    	   	Rname <- names(object$fixef[,1])
    	else
    	   	Rname <- c(names(object$fixef[,1]), names(object$dispar[,1]))
    	if (corr != "Ind")
    	   	Rname <- c(Rname, "alpha", "rho")
-   	rownames(cf) <- Rname	
+   	names(cf) <- Rname	
 	return(cf)
+}
+
+vcov.simplexreg <- 
+function(object, ...){
+    type <- object$type
+    corr <- object$corr
+    if (type == "homo")
+        Rname <- names(object$fixef[,1])
+    else
+        Rname <- c(names(object$fixef[,1]), names(object$dispar[,1]))
+    if (corr != "Ind")
+        Rname <- c(Rname, "alpha", "rho")
+    covf <- object$covf
+    rownames(covf) <- Rname
+    colnames(covf) <- Rname
+    return(covf)	
 }
 
 residuals.simplexreg <- function(object, type = c("appstdPerr", "stdPerr", "stdscor", 

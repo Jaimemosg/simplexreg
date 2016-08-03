@@ -1,10 +1,10 @@
 \name{simplex}
-\alias{dsim}
-\alias{psim}
-\alias{qsim}
-\alias{rsim}
-\alias{psim.norm}
-\alias{qsim.norm}
+\alias{dsimplex}
+\alias{psimplex}
+\alias{qsimplex}
+\alias{rsimplex}
+\alias{psimplex.norm}
+\alias{qsimplex.norm}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{The Simplex Distribution Functions
 %%  ~~function to do ... ~~
@@ -14,12 +14,12 @@ for the simplex distribution with mean equal to \code{mu} and dispersion equal t
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-dsim(x, mu, sig)
-psim(q, mu, sig)
-qsim(p, mu, sig)
-rsim(n, mu, sig)
-psim.norm(q, mu, sig)
-qsim.norm(p, mu, sig)
+dsimplex(x, mu, sig)
+psimplex(q, mu, sig)
+qsimplex(p, mu, sig)
+rsimplex(n, mu, sig)
+psimplex.norm(q, mu, sig)
+qsimplex.norm(p, mu, sig)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -46,8 +46,8 @@ where \eqn{d(y;\mu)} is a unit deviance function
 \code{qnorm} provides results up to about 6 digits.	  
 %%  ~~ If necessary, more details than the description above ~~
 }
-\value{\code{dsim} gives density function, \code{psim} gives the distribution function, \code{qsim} gives quantile function and 
-\code{rsim} gives random number generated from the simplex distribution. \code{psim.norm} and \code{qsim.norm} gives the 
+\value{\code{dsimplex} gives density function, \code{psimplex} gives the distribution function, \code{qsimplex} gives quantile function and 
+\code{rsimplex} gives random number generated from the simplex distribution. \code{psim.norm} and \code{qsimplex.norm} gives the 
 renormalized distribution and quantile function.  
 %%  ~Describe the value returned
 %%  If it is a LIST, use
@@ -75,9 +75,9 @@ renormalized distribution and quantile function.
 
 \examples{
 # simplex distribution function
-dsim(seq(0.01,0.99,0.01), 0.5, 1)
-psim(seq(0.01,0.99,0.01), 0.5, 1)
-qsim(seq(0.01,0.99,0.01), 0.5, 1)
+dsimplex(seq(0.01,0.99,0.01), 0.5, 1)
+psimplex(seq(0.01,0.99,0.01), 0.5, 1)
+qsimplex(seq(0.01,0.99,0.01), 0.5, 1)
 
 # random variable generation
 n <- 200
@@ -91,7 +91,7 @@ eta <- ga0 + ga1 * T + ga2 * S
 mu <- exp(eta)/(1+exp(eta))
 Y <- rep(0, n)
 for (i in 1:n){ 
-  Y[i] <- rsim(1, mu[i], sigma)
+  Y[i] <- rsimplex(1, mu[i], sigma)
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
